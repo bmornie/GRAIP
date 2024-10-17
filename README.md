@@ -51,3 +51,4 @@ Example usage:
 ```bash
 python main.py data/Haloferax_volcanii.gml 1000 4 10 new_graphs
 ```
+For more elaborate uses, see `test.py` and the function documentation.
