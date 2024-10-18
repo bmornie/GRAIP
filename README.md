@@ -39,4 +39,14 @@ To generate graphs with GRAIP (or other models, see below) specify the parameter
 ```bash
 python main.py
 ```
-This only generates the graphs, 
+This only generates the graphs, but does not evaluate them. See `test.py` for an example on how to use the functions in `evaluate.py`, or read the function documentation.
+
+### Code description
+- `main.py` is the main script file. Parameters are specified in `config.yaml`.
+- `evaluate.py` contains the functions used to perform the graph evaluation, as reported in the paper.
+- `test.py` is a test script that shows how to use the GraphGenerator class and evaluation functions.
+- `generator/generator.py` contains the GraphGenerator class. It is best to use this class instead of calling the functions in `graphlet_counts.py`, `sampling.py` and `models.py` directly. But running `main.py` should generally be sufficient.
+  
+In `models.py`, we also provide implementations of SwapCon and the (dual) BA model used for comparison in the paper. [GraphGen](https://github.com/idea-iitd/graphgen) is available on GitHub.
+
+Finally, `data/` contains the PPI networks on which we evaluated our models. See `data/README.md` for more information on these datasets.
