@@ -23,15 +23,15 @@ class GraphGenerator(object):
             The maximum order of graphlets taken into account. This can be 3, 4 or 5. The default is 5.
         """
         
-        if G is not None:
+        if graph_data is not None:
+            self.data = graph_data
+        elif G is not None:
             for edge in G.edges():
                 try:
                     G.edges[edge]["probability"]
                 except:
                     raise TypeError("Not all edges of the probabilistic graph G have attribute 'probability'. This is required for sampling.")
             self.probabilistic_graph = G
-        if graph_data is not None:
-            self.data = graph_data
         if G is None and graph_data is None:
             raise ValueError("Provide either a probabilistic graph G or a path where the graph data from a previously sampled network is stored.")
         

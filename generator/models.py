@@ -150,22 +150,22 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
         
         P_sum = np.cumsum(P[::-1])
         Pt_sum = np.cumsum(P_target[::-1])
-        score_deg = w*np.sum(np.abs(P_sum-Pt_sum)/Pt_sum)/len(Pt_sum)
+        score_deg = np.sum(np.abs(P_sum-Pt_sum)/Pt_sum)/len(Pt_sum)
         
         score_gl = 0
         for i in range(len(gl)):
             c = gl[i]
             E_c = E_gl[i]
-            std_c = std_gl[i]
+            b_c = bounds_gl[i]
             
             if E_c == 0:
                 continue
-            p = std_c/E_c
-            if c == 0 and E_c > std_c:                      # Count is 0, take 0.1 to avoid issues with log
+            p = b_c/E_c
+            if c == 0 and E_c > b_c:                      # Count is 0, take 0.1 to avoid issues with log
                 score_gl += np.log(0.1/E_c)/np.log(1-p)
-            elif c < E_c - std_c:
+            elif c < E_c - b_c:
                 score_gl += np.log(c/E_c)/np.log(1-p)
-            elif c > E_c + std_c:
+            elif c > E_c + b_c:
                 score_gl += np.log(c/E_c)/np.log(1+p)
         score_gl /= len(gl)
         
@@ -231,7 +231,7 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
     steps = 0
     counter = 0
     node_step_counter = 0
-    new_node = N        # The index of newly added nodes is not decreased when a node is removed for convenience.
+    new_node = N        # For convenience, the index of newly added nodes is not decreased when a node is removed.
     
     while True:
         
@@ -318,7 +318,7 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
         temp_score = Score(P_temp, gl_temp, P_target, P_bounds, E_gl, bounds_gl, w)
         
         
-        if H_score > temp_score or counter == round(max_rej):
+        if H_score > temp_score or counter == max_rej:
             counter = 0
             H_score = temp_score
             if node_step_counter == 0:
@@ -339,7 +339,6 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
             if node_step_counter == 0 and node_addition:
                 H.remove_node(n)
             counter += 1
-            
         
         # Every once in a while, remove parts disconnected from the main component (these will be small).
         
