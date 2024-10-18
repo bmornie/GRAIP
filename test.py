@@ -52,16 +52,22 @@ savepath = "new_graphs"     # Save new graphs in folder new_graphs. Graph files 
 os.mkdir(savepath)
 
 # Generate graphs with GRAIP. We will use mostly the default settings, but still provide them explicitly for clarity.
+    
+print("Generating GRAIP graphs...")
 
 GRAIP_graphs = gen.generate(model='GRAIP', graphs=graphs, savepath=savepath, max_steps=10000, node_step=5, w=2/3, max_rej=None)
 
 # Generate graphs with SwapCon.
+
+print("Generating SwapCon graphs...")
 
 SwapCon_graphs = gen.generate(model='SwapCon', graphs=graphs, savepath=savepath, temperature=0.01, cooling=0.99, threshold=0.05, max_reject=None)
 
 
 # Now we will evaluate the graphs using the metrics used in our paper.
 # We did not generate enough graphs to draw meaningful conclusions, but this is just an example.
+
+print("Evaluating generated graphs...")
 
 print("GRAIP:")
 

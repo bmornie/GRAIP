@@ -3,8 +3,6 @@ import numpy as np
 from random import random
 from sklearn.metrics.pairwise import pairwise_kernels
 from functools import partial
-from scipy.linalg import toeplitz
-import pyemd
 
 from generator.graphlet_counts import three_counts, four_counts, five_counts
 
@@ -12,18 +10,6 @@ from generator.graphlet_counts import three_counts, four_counts, five_counts
 
 ##### ---------- Quality metrics ---------- #####
 
-
-def emd(x, y, distance_scaling=1.0):
-    support_size = max(len(x), len(y))
-    d_mat = toeplitz(range(support_size)).astype(np.float64)
-    distance_mat = d_mat/distance_scaling
-
-    emd_val = pyemd.emd(x, y, distance_mat)
-    return emd_val
-
-def gaussian_emd(x, y, sigma=1.0, distance_scaling=1.0):
-    emd_val = emd(x, y, distance_scaling=distance_scaling)
-    return np.exp(-1*emd_val*emd_val/(2*sigma**2))
 
 def gaussian(x, y, sigma=1.0):
     dist = np.linalg.norm(x - y, 2)
@@ -110,7 +96,21 @@ def mmd_degree(generated_graphs, sample_graphs=None, target_network=None, batche
             hist_generated.append(nx.degree_histogram(generated_graphs[b*batches+n]))
             hist_sampled.append(nx.degree_histogram(sample_graphs[b*batches+n]))
         
-        mmd_deg.append(compute_mmd(hist_sampled, hist_generated, gaussian_emd, is_hist=True))
+        if b == 0:
+            sigma_ = []
+            for i in range(len(hist_sampled)-1):
+                for j in range(i+1, len(hist_sampled)):
+                    hi = np.array(hist_sampled[i])
+                    hj = np.array(hist_sampled[j])
+                    max_len = max(len(hi), len(hj))
+
+                    # Pad both arrays to have the same length
+                    hi = np.pad(hi, (0, max_len-len(hi)), 'constant', constant_values=0)
+                    hj = np.pad(hj, (0, max_len-len(hj)), 'constant', constant_values=0)
+                    sigma_.append(np.linalg.norm(hi-hj, 2))
+            sigma = np.median(sigma_)
+        
+        mmd_deg.append(compute_mmd(hist_sampled, hist_generated, metric=partial(gaussian, sigma=sigma), is_hist=True))
         
     MMD_deg = np.mean(mmd_deg)
     
