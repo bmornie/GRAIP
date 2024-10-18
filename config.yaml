@@ -1,7 +1,7 @@
 # Basic parameters.
 
 parameters:
-  G: "data/Haloferax_volcanii.gml"          # Path to to target network (in gml format). Ignored if graph_data is provided (and can be None in that case).
+  G: "data/Haloferax_volcanii.gml"          # Path to to target network (in gml format). Ignored if graph_data is provided (and can be left empty).
   graph_data:          # If network was already sampled, provide path to .npz file here.
   n_g: 4          # Maximum order of graphlets taken into account. Can be 3, 4 or 5.
 
@@ -22,7 +22,7 @@ generator:
   savepath: "new_graphs"          # Graphs are saved in edge list format under savepath/[model]_graph[n].txt
 
 
-# Specific to GRAIP (ignored if other model).
+# Specific to GRAIP (ignored for other models).
 
 GRAIP:
   max_s:           # Maximum number of iterations. If not specified, this is set to 100 times the mean number of edges.
@@ -31,7 +31,7 @@ GRAIP:
   max_rej:         # A modification is always accepted after max_rey rejected. If not specified, this is set to 2% of the mean number of edges.
 
 
-# Specific to SwapCon (ignored if other model).
+# Specific to SwapCon (ignored for other models).
 
 SwapCon:
   temperature: 0.01          # Initial temperature for simulated annealing.
