@@ -9,14 +9,13 @@ by Bram Mornie, Didier Colle, Pieter Audenaert and Mario Pickavet.
 ### Requirements  
 To generate graphs with GRAIP, you need the following dependencies: (listed versions were used during development and testing)  
 - Python: 3.12  
-- numpy: 1.26.4 (v2+ is fine for GRAIP, but pyemd does not work with it!)  
+- numpy: 2.1.2
 - matplotlib: 3.9.2  
 - networkx: 3.3
+- PyYAML: 6.0.2
   
 Additionally, if you want to run `evaluate.py` and `test.py`, you also need:
-- scipy: 1.14.1
 - scikit-learn: 1.5.2
-- pyemd: 1.0.0
 
 ### Installation  
 **1. Clone the repository**  
@@ -36,19 +35,8 @@ python test.py
 ```
 
 ### Basic usage
-You can quicly generate one or multiple graphs with GRAIP (default settings) by doing
+To generate graphs with GRAIP (or other models, see below) specify the parameters in `config.yaml` and run
 ```bash
-python main.py graph_path S n_g graphs savepath
+python main.py
 ```
-with:
-- graph_path: the location of the probabilistic target graph (should be in gml format)
-- S: the number of sample graphs constructed during sampling
-- n_g: the maximum order of graphlets taken into account (should be 3, 4 or 5)
-- graphs: the number of graphs to be generated
-- savepath: location where generated graphs are stored. Graphs are saved in edge list format under "savepath/GRAIP_graph[n].txt" for n = 0, .., graphs-1
-  
-Example usage:
-```bash
-python main.py data/Haloferax_volcanii.gml 1000 4 10 new_graphs
-```
-For more elaborate uses, see `test.py` and the function documentation.
+This only generates the graphs, 
