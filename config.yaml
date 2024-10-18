@@ -19,7 +19,7 @@ sampling:
 generator:
   model: "GRAIP"          # Pick a generator model. Can be "GRAIP", "SwapCon" or "BA".
   graphs: 10          # The number of graphs to be generated.
-  savepath: "new_graphs"          # If not None, graphs are saved in edge list format under savepath/[model]_graph[n].txt
+  savepath: "new_graphs"          # Graphs are saved in edge list format under savepath/[model]_graph[n].txt
 
 
 # Specific to GRAIP (ignored if other model).
