@@ -10,7 +10,7 @@ parameters:
 
 sampling:
   S: 1000          # Number of samples.
-  savefile: H_volcanii          # If provided, results will be stored under savefile.npz.
+  savefile: "H_volcanii"          # If provided, results will be stored under savefile.npz.
   plot: False          # If True, plot the degree distribution and graphlet frequencies.
 
 
