@@ -144,15 +144,15 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
         The newly generated graph.
     """
     
-    # The score function
+    # The cost function
     
-    def Score(P, gl, P_target, P_bounds, E_gl, bounds_gl, w):
+    def Cost(P, gl, P_target, P_bounds, E_gl, bounds_gl, w):
         
         P_sum = np.cumsum(P[::-1])
         Pt_sum = np.cumsum(P_target[::-1])
-        score_deg = np.sum(np.abs(P_sum-Pt_sum)/Pt_sum)/len(Pt_sum)
+        cost_deg = np.sum(np.abs(P_sum-Pt_sum)/Pt_sum)/len(Pt_sum)
         
-        score_gl = 0
+        cost_gl = 0
         for i in range(len(gl)):
             c = gl[i]
             E_c = E_gl[i]
@@ -162,19 +162,19 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
                 continue
             p = b_c/E_c
             if c == 0 and E_c > b_c:                      # Count is 0, take 0.1 to avoid issues with log
-                score_gl += np.log(0.1/E_c)/np.log(1-p)
+                cost_gl += np.log(0.1/E_c)/np.log(1-p)
             elif c < E_c - b_c:
-                score_gl += np.log(c/E_c)/np.log(1-p)
+                cost_gl += np.log(c/E_c)/np.log(1-p)
             elif c > E_c + b_c:
-                score_gl += np.log(c/E_c)/np.log(1+p)
-        score_gl /= len(gl)
+                cost_gl += np.log(c/E_c)/np.log(1+p)
+        cost_gl /= len(gl)
         
         if np.any(gl[E_gl==0]!=0):
-            score_gl *= 10                 # Penalty for having a graphlet that never appears in the target graph
+            cost_gl *= 10                 # Penalty for having a graphlet that never appears in the target graph
         
-        score = w*score_deg + (1-w)*score_gl
+        cost = w*cost_deg + (1-w)*cost_gl
         
-        return score
+        return cost
     
     
     # Preprocessing
@@ -212,18 +212,18 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
     # A really bad seed can very rarely slow down graph generation a lot, so generate 10 and keep the best one to be safe.
     
     N = round(E_n*0.2)
-    best_score = 1000
+    lowest_cost = 1000
     for _ in range(10):
         H_test = nx.barabasi_albert_graph(N, round(E_e/E_n))
         gl_test = count_func(H_test)
         P_test = custom_degree_histogram(nx.degree_histogram(H_test), bins)/N
-        score = Score(P_test, gl_test, P_target, P_bounds, E_gl, bounds_gl, w)
-        if score < best_score:
-            best_score = score
+        cost = Cost(P_test, gl_test, P_target, P_bounds, E_gl, bounds_gl, w)
+        if cost < lowest_cost:
+            lowest_cost = cost
             H = deepcopy(H_test)
     gl = count_func(H)
     deg_hist = np.array(nx.degree_histogram(H))
-    H_score = best_score
+    H_cost = lowest_cost
     
     
     # Incremental graph generation
@@ -315,12 +315,12 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
                 deg_hist_temp[H.degree(n2)-1] += 1
         
         P_temp = custom_degree_histogram(deg_hist_temp, bins)/H.number_of_nodes()
-        temp_score = Score(P_temp, gl_temp, P_target, P_bounds, E_gl, bounds_gl, w)
+        temp_cost = Cost(P_temp, gl_temp, P_target, P_bounds, E_gl, bounds_gl, w)
         
         
-        if H_score > temp_score or counter == max_rej:
+        if H_cost > temp_cost or counter == max_rej:
             counter = 0
-            H_score = temp_score
+            H_cost = temp_cost
             if node_step_counter == 0:
                 if node_addition:
                     N += 1
@@ -348,7 +348,7 @@ def GRAIP(properties, samples, graphlet_config, max_steps=None, node_step=5, w=2
                 N = H.number_of_nodes()
                 gl = count_func(H)
                 P = custom_degree_histogram(nx.degree_histogram(H), bins)/N
-                score = Score(P, gl, P_target, P_bounds, E_gl, bounds_gl, w)
+                cost = Cost(P, gl, P_target, P_bounds, E_gl, bounds_gl, w)
         
         steps += 1
         
