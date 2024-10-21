@@ -1,4 +1,4 @@
-# GRAIP: GRAphlet-based Incrementel generator for Probabilistic networks
+# GRAIP: GRAphlet-based Incremental generator for Probabilistic networks
 
 This is the official Python implementation of GRAIP, as described in  
 
