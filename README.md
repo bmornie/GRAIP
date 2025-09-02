@@ -2,9 +2,7 @@
 
 This is the official Python implementation of GRAIP, as described in  
 
-**Generating Random Graphs With Prescribed Graphlet Frequency Bounds Derived From Probabilistic Networks**  
-by Bram Mornie, Didier Colle, Pieter Audenaert and Mario Pickavet.  
-(Currently under review for publication.)  
+Mornie B., Colle D., Audenaert P., Pickavet M. (2025) **Generating random graphs with prescribed graphlet frequency bounds derived from probabilistic networks.** PLOS ONE 20(8): e0328639. https://doi.org/10.1371/journal.pone.0328639
 
 ### Requirements  
 To generate graphs with GRAIP, you need the following dependencies: (listed versions were used during development and testing)  
